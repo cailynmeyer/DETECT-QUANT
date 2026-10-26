@@ -1,0 +1,83 @@
+---
+title: "Dyad Quantitative Consent"
+format: dashboard
+scrolling: true
+---
+
+```{r, include = FALSE}
+# Libraries
+library(here)
+library(dplyr)
+library(knitr)
+```
+
+<!-- Load data -->
+
+```{r, include = FALSE}
+source(here::here("r", "codebook.R"))
+source(here::here("r", "add_shade_column_x_rows.R")) # Adding shade to DT tables
+source(here::here("r", "quant_dashboard_helpers.R"))
+
+# Enrollment goal in dyads, from the consent form ("approximately 125
+# caregiving dyads"). Progress = dyads with both a patient and a caregiver
+# consented. Update here if the target changes.
+enrollment_goal_dyads <- 125
+
+# DETECT_QUANT_MOCK=1 previews the dashboard with FAKE data from
+# data_management/mock_data/make_mock_data.R instead of the REDCap pull.
+use_mock <- identical(Sys.getenv("DETECT_QUANT_MOCK"), "1")
+
+data_path <- if (use_mock) {
+    here::here("data_management", "mock_data", "quant_consent_mock.RDS")
+} else {
+    here::here("data", "quant", "quant_consent_cleaned.RDS")
+}
+
+data <- readRDS(data_path)
+
+# REDCap pull date is the cleaned file's modified time.
+pull_date <- as.Date(file.mtime(data_path))
+
+# Render one page per site from the shared page layout. The All page keeps the
+# ALL-ONLY blocks (enrollment goal, by-site breakdown); site pages drop them.
+page_template <- paste(
+    readLines(here::here("sections", "_consent_page.qmd")),
+    collapse = "\n"
+)
+
+render_page <- function(title, page_df, is_all = FALSE) {
+    body <- if (is_all) {
+        page_template
+    } else {
+        gsub("(?s)<!-- ALL-ONLY-START -->.*?<!-- ALL-ONLY-END -->", "", page_template, perl = TRUE)
+    }
+    # Drop the template's notes: inside a tabset column a comment becomes an empty tab.
+    body <- gsub("(?s)<!--.*?-->", "", body, perl = TRUE)
+    body <- gsub("{{GOAL}}", enrollment_goal_dyads, body, fixed = TRUE)
+    env <- new.env(parent = globalenv())
+    env$page_df <- page_df
+    paste0("\n\n# ", title, "\n\n", knit_child(text = body, envir = env, quiet = TRUE))
+}
+```
+
+#  {.sidebar}
+
+```{r, echo=FALSE}
+sidebar_files_box(basename(data_path), pull_date)
+sidebar_refs_box(data)
+```
+
+```{r, echo=FALSE, results='asis'}
+if (use_mock) {
+    cat('<div class="sidebar-pull"><div class="pull-label">Preview mode</div>',
+        '<div class="pull-date">Showing FAKE mock data</div></div>', sep = "")
+}
+```
+
+```{r, echo=FALSE, results='asis'}
+cat(render_page("All", data, is_all = TRUE))
+
+for (code in names(institution_short)) {
+    cat(render_page(institution_short[[code]], data %>% filter(site_code == code)))
+}
+```

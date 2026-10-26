@@ -1,0 +1,233 @@
+<!--
+Layout for one dashboard page (the All page and each site page). Knitted once
+per page by quant_consent_dashboard.qmd with `page_df` (that page's records)
+set. Blocks between ALL-ONLY-START / ALL-ONLY-END appear on the All page only.
+The leading "_" keeps Quarto from rendering this file on its own.
+-->
+
+```{r}
+#| include: false
+vb <- consent_counts(page_df)
+```
+
+<!-- Red: incomplete consent from someone who said Yes (contact them).
+Yellow: every other record with a problem (data to fix). Each record appears in
+at most one banner; both are empty when there is nothing to flag. -->
+
+```{r}
+#| echo: false
+#| results: asis
+followup_needed_banner(page_df)
+```
+
+```{r}
+#| echo: false
+#| results: asis
+record_issues_banner(page_df)
+```
+
+## Row {height="5%" .fill}
+
+<!-- Consent forms = every REDCap record that reached the consent instrument. -->
+
+```{r}
+#| title: Consent Forms Started
+#| content: valuebox
+list(icon = "file-earmark-text", color = "vb-green", value = vb$started)
+```
+
+```{r}
+#| title: Consented
+#| content: valuebox
+list(icon = "check2-circle", color = "vb-green", value = vb$consented)
+```
+
+```{r}
+#| title: Declined
+#| content: valuebox
+list(icon = "x-circle", color = "vb-green", value = vb$declined)
+```
+
+<!-- Started but never submitted (survey timestamp "[not completed]"). -->
+
+```{r}
+#| title: Incomplete Consent Forms
+#| content: valuebox
+list(icon = "hourglass-split", color = "vb-green", value = vb$incomplete)
+```
+
+<!-- Consent rate = consented / (consented + declined); incomplete forms are left out. -->
+
+```{r}
+#| title: Consent Rate
+#| content: valuebox
+list(icon = "percent", color = "vb-green", value = vb$rate)
+```
+
+## Row {height="5%" .fill}
+
+```{r}
+#| title: Patients Consented
+#| content: valuebox
+list(icon = "person", color = "vb-green", value = vb$patients)
+```
+
+```{r}
+#| title: Caregivers Consented
+#| content: valuebox
+list(icon = "people", color = "vb-green", value = vb$caregivers)
+```
+
+<!-- Caregivers who chose to answer the survey about the care recipient. -->
+
+```{r}
+#| title: Caregiver Proxy Surveys
+#| content: valuebox
+list(icon = "person-badge", color = "vb-green", value = vb$proxy)
+```
+
+```{r}
+#| title: Interested in Follow-Up Interview
+#| content: valuebox
+list(icon = "telephone", color = "vb-green", value = vb$followup)
+```
+
+## Row {height="5%" .fill}
+
+<!-- A dyad counts once its Dyad Interview ID has both a patient and a caregiver consent. -->
+
+```{r}
+#| title: Dyads With Patient and Caregiver Consented
+#| content: valuebox
+list(icon = "link-45deg", color = "vb-green", value = vb$dyads_complete)
+```
+
+```{r}
+#| title: Surveys Completed (End Form Complete)
+#| content: valuebox
+list(icon = "clipboard2-check", color = "vb-green", value = vb$surveys_complete)
+```
+
+<!-- ALL-ONLY-START -->
+
+<!-- Complete dyads as a share of the dyad goal set in quant_consent_dashboard.qmd ({{GOAL}} is filled in from it). -->
+
+```{r}
+#| title: Progress to Goal ({{GOAL}} Dyads)
+#| content: valuebox
+list(icon = "flag", color = "vb-green", value = pct(vb$dyads_complete, enrollment_goal_dyads))
+```
+
+<!-- ALL-ONLY-END -->
+
+## Row {.flow}
+
+```{r}
+#| title: Consents Over Time (Cumulative, by Week)
+consents_over_time_plot(page_df)
+```
+
+<!-- ALL-ONLY-START -->
+
+## Row
+
+### Column {.tabset}
+
+```{r}
+#| title: Consent Decisions by Site
+consents_by_site_plot(page_df)
+```
+
+```{r}
+#| title: Table
+site_table(page_df)
+```
+
+<!-- ALL-ONLY-END -->
+
+## Row
+
+### Column {.tabset}
+
+<!-- Among consented participants. Caregiver Questions counts caregivers only. -->
+
+```{r}
+#| title: Survey Completion by Instrument
+completion_plot(page_df)
+```
+
+```{r}
+#| title: Table
+completion_table(page_df)
+```
+
+## Row
+
+### Column {.tabset}
+
+```{r}
+#| title: Care Recipient Diagnoses (Caregiver-Reported)
+adrd_plot(page_df)
+```
+
+```{r}
+#| title: Proxy Relationship to Care Recipient
+relationship_plot(page_df)
+```
+
+```{r}
+#| title: Follow-Up Interview Contact Times
+followup_time_plot(page_df)
+```
+
+## Row
+
+### Column {.tabset}
+
+<!-- Demographics describe who the survey is about: patients (self-report or
+caregiver proxy) vs. caregivers (self-report). -->
+
+```{r}
+#| title: Sex
+demographic_plot(page_df, "sex_f")
+```
+
+```{r}
+#| title: Hispanic Origin
+demographic_plot(page_df, "hispanic_f")
+```
+
+```{r}
+#| title: Race
+demographic_plot(page_df, "race")
+```
+
+```{r}
+#| title: Age
+demographic_plot(page_df, "age_band")
+```
+
+```{r}
+#| title: Marital Status
+demographic_plot(page_df, "marital_f")
+```
+
+```{r}
+#| title: Schooling
+demographic_plot(page_df, "school_f")
+```
+
+```{r}
+#| title: Income
+demographic_plot(page_df, "income_f")
+```
+
+```{r}
+#| title: Military Service
+demographic_plot(page_df, "military_f")
+```
+
+```{r}
+#| title: Table
+demographic_table(page_df)
+```

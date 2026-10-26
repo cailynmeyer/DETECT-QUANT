@@ -1,0 +1,17 @@
+---
+title: "DETECT Dyad Quantitative Survey"
+---
+
+# Caregiver / Care Recipient Dyad Health and Safety Survey
+
+## Objectives
+This dashboard monitors consent and survey responses for the quantitative arm of the DETECT-RPC R33 phase (HSC-SPH-24-0123). Care recipients enrolled in a partner home-based primary care program, and the family caregivers who help care for them, are invited to complete an online survey about their health, social support, and safety.
+
+## Who Takes the Survey
+  1. **Patients** answer the survey about themselves.
+  2. **Caregivers** choose to answer about themselves, or about the person they care for (a *proxy* survey).
+
+Approximately 125 care recipients and caregivers (250 total) will be surveyed across seven sites: Baylor College of Medicine House Calls, Johns Hopkins Home-Based Medicine, UCSF Care at Home, UAB House Calls, UT Southwestern COVE, LBJ House Calls, and UT Physicians House Calls.
+
+## Survey Instruments
+Consent · Sociodemographics · Social Isolation/Support · General Health · Substance Use · Self-Report · Caregiver Questions (caregivers only) · End

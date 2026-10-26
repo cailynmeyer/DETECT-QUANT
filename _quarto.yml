@@ -1,0 +1,28 @@
+project:
+  type: website
+  # Select the files to render when we run quarto render or quarto publish
+  render:
+    - index.qmd
+    - sections/quant_consent_dashboard.qmd
+
+website:
+  title: "DETECT Dyad Quantitative"
+  navbar:
+    search: true
+    logo: graphics/detect_logo.png
+    left:
+      - text: "Overview"
+        href: index.qmd
+      - text: "Dashboards"
+        menu:
+          - sections/quant_consent_dashboard.qmd
+
+
+format:
+  html:
+    page-layout: full
+    theme: 
+    - cosmo
+    - assets/custom_style.css # custom formatting for value boxes
+    css: assets/custom_style.css # custom formatting for value boxes
+    toc: true
