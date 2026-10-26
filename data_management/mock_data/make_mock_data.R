@@ -13,7 +13,7 @@ library(dplyr, warn.conflicts = FALSE)
 source(here::here("r", "codebook.R"))
 source(here::here("r", "clean_quant_consent.R"))
 
-set.seed(9147)
+set.seed(2026)
 n <- 180
 
 draw <- function(codes, prob = NULL) sample(codes, n, replace = TRUE, prob = prob)

@@ -1,4 +1,4 @@
-# Value labels for the DETECT Dyad Quantitative REDCap project (PID 9147).
+# Value labels for the DETECT Dyad Quantitative survey.
 #
 # Transcribed from the data dictionary codebook
 # ("DETECT Dyad Quantitative _ REDCap.pdf", exported 10/26/2026). Data is pulled
